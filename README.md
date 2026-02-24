@@ -3,6 +3,10 @@
 A lightweight, structured Python wrapper for interacting with the **Goftino API**.
 This package provides a clean client interface, typed data models, logging support, and optional data fetching utilities.
 
+<p align="center">
+  <img src="https://payping.io/wp-content/themes/payping/assets/images/logo/PayPing_Logo_PayPingFAMargined.svg" alt="Logo" width="120">
+</p>
+
 ---
 ## Disclaimer
 
@@ -30,19 +34,15 @@ All feature requests, bug reports, and improvements should be submitted through 
 
 ## 📦 Installation
 
-### Install from PyPI (if published)
-
-```bash
-pip install goftino-wrapper
-```
-
 ### Install from source
 
 ```bash
-git clone https://github.com/your-repo/goftino-wrapper.git
+git clone https://github.com/ark1375/GoftinoWrapper.git
 cd goftino-wrapper
 pip install .
 ```
+
+> Note that you may need python build tools installed on your system.
 
 ### Install in development mode
 
@@ -75,7 +75,8 @@ goftino-wrapper/
 ├── log_config.json          # Logging configuration
 ├── pyproject.toml           # Modern packaging configuration
 ├── setup.py                 # Legacy packaging support
-└── README.md
+├── README.md
+└── LICENSE
 ```
 
 ---
@@ -172,6 +173,8 @@ Use the fetcher when:
 * You want automation around pagination
 * You need structured retrieval workflows
 
+> :warning: Consider this module as Experimental. Proceed with caution.
+> 
 ---
 
 ## 🔧 Utilities (`utils.py`)
@@ -210,27 +213,6 @@ You can customize:
 
 ---
 
-# 🧪 Running Tests
-
-```bash
-pytest
-```
-
-Test coverage includes:
-
-* Client validation
-* API call behavior
-* Retrieval logic
-* Database table setup (for integration testing)
-
-Manual testing:
-
-```bash
-python tests/manual_test.py
-```
-
----
-
 # 🏗️ Packaging
 
 This project supports both:
@@ -253,13 +235,13 @@ dist/
 Example:
 
 ```
-goftino_wrapper-0.1.7-py3-none-any.whl
+goftino_wrapper-0.1.7.*-py3-none-any.whl
 ```
 
 Install locally from built wheel:
 
 ```bash
-pip install dist/goftino_wrapper-0.1.7-py3-none-any.whl
+pip install dist/goftino_wrapper-0.1.7.*-py3-none-any.whl
 ```
 
 ---
@@ -283,12 +265,6 @@ or
 
 ```bash
 pip install -e .
-```
-
-### 3️⃣ Run tests
-
-```bash
-pytest
 ```
 
 ---
