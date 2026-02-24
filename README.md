@@ -4,7 +4,7 @@ A lightweight, structured Python wrapper for interacting with the **Goftino API*
 This package provides a clean client interface, typed data models, logging support, and optional data fetching utilities.
 
 <p align="center">
-  <img src="https://payping.io/wp-content/themes/payping/assets/images/logo/PayPing_Logo_PayPingFAMargined.svg" alt="Logo" width="120">
+  <img src="assets/PayPing_Logo.svg" alt="Logo" width="120">
 </p>
 
 ---
