@@ -76,7 +76,8 @@ class Goftino:
         endpoint: str, 
         params: Optional[Dict[str, Any]] = None,
         json_data: Optional[Dict[str, Any]] = None,
-        model_type: Optional[str] = None
+        model_type: Optional[str] = None,
+        timeout : float = 10.0
     ) -> Union[Response, Error]:
         """
         Make HTTP request and handle response.
@@ -96,10 +97,10 @@ class Goftino:
         try:
             # CHANGED: Use self._session instead of requests directly
             if method == 'GET':
-                resp = self._session.get(url=url, headers=self._headers)
+                resp = self._session.get(url=url, headers=self._headers, timeout=timeout)
             else:  # POST
                 filtered_json = {k: v for k, v in json_data.items() if v is not None} if json_data else {}
-                resp = self._session.post(url=url, headers=self._headers, json=filtered_json)
+                resp = self._session.post(url=url, headers=self._headers, json=filtered_json, timeout=timeout)
 
             output = resp.json()
 
@@ -125,7 +126,8 @@ class Goftino:
         page: int = 0,
         operator_id: Optional[str] = None,
         status: Optional[str] = None,
-        has_owner: Optional[bool] = None
+        has_owner: Optional[bool] = None,
+        timeout: float = 10.0
     ) -> Response:
         """Retrieve all chats with optional filtering."""
         params = {
@@ -135,7 +137,7 @@ class Goftino:
             'status': status,
             'has_owner': has_owner
         }
-        return self._make_request('GET', 'chats', params=params, model_type='chats')
+        return self._make_request('GET', 'chats', params=params, model_type='chats', timeout=timeout)
 
     def get_chat(
         self,
@@ -144,7 +146,8 @@ class Goftino:
         from_date: Optional[str] = None,
         to_date: Optional[str] = None,
         limit: int = 50,
-        page: Optional[int] = None
+        page: Optional[int] = None,
+        timeout: float = 10.0
     ) -> Response:
         """Retrieve chat data by chat_id or user_id."""
         if not (chat_id is None) ^ (user_id is None):
@@ -158,24 +161,26 @@ class Goftino:
             'limit': limit,
             'page': page
         }
-        return self._make_request('GET', 'chat_data', params=params, model_type='chat')
+        return self._make_request('GET', 'chat_data', params=params, model_type='chat', timeout=timeout)
 
     def user_unread_messages(
         self,
         chat_id: Optional[str] = None,
-        user_id: Optional[str] = None
+        user_id: Optional[str] = None,
+        timeout: float = 10.0
     ) -> Response:
         """Get unread messages for a user."""
         if not (chat_id or user_id):
             raise ValueError('Either the user_id or chat_id parameter should be provided!')
 
         params = {'chat_id': chat_id, 'user_id': user_id}
-        return self._make_request('GET', 'user_unread_messages', params=params, model_type='chat')
+        return self._make_request('GET', 'user_unread_messages', params=params, model_type='chat', timeout=timeout)
 
     def user_data(
         self,
         chat_id: Optional[str] = None,
-        user_id: Optional[str] = None
+        user_id: Optional[str] = None,
+        timeout: float = 10.0
     ) -> Response:
         """Retrieve user data."""
         if not (chat_id or user_id):
@@ -183,16 +188,17 @@ class Goftino:
             raise ValueError("Either the user_id or chat_id parameter should be provided!")
 
         params = {'chat_id': chat_id, 'user_id': user_id}
-        return self._make_request('GET', 'user_data', params=params, model_type='user_data')
+        return self._make_request('GET', 'user_data', params=params, model_type='user_data', timeout=timeout)
 
-    def get_all_operators(self) -> Response:
+    def get_all_operators(self, timeout: float = 10.0) -> Response:
         """Retrieve all operators."""
-        return self._make_request('GET', 'operators', model_type='operators')
+        return self._make_request('GET', 'operators', model_type='operators', timeout=timeout)
 
     def get_operator_data(
         self,
         email: Optional[str] = None,
-        operator_id: Optional[str] = None
+        operator_id: Optional[str] = None,
+        timeout: float = 10.0
     ) -> Response:
         """Retrieve operator data by email or operator_id."""
         if not (email or operator_id):
@@ -200,14 +206,15 @@ class Goftino:
             raise ValueError('Either the email or operator_id parameter should be provided!')
 
         params = {'email': email, 'operator_id': operator_id}
-        return self._make_request('GET', 'operator_data', params=params, model_type='operator')
+        return self._make_request('GET', 'operator_data', params=params, model_type='operator', timeout=timeout)
 
     def send_message(
         self,
         chat_id: str,
         operator_id: str,
         message: str,
-        reply_id: Optional[str] = None
+        reply_id: Optional[str] = None,
+        timeout: float = 10.0
     ) -> Response:
         """Send a message as an operator."""
         json_data = {
@@ -216,23 +223,25 @@ class Goftino:
             'message': message,
             'reply_id': reply_id
         }
-        return self._make_request('POST', 'send_message', json_data=json_data, model_type='send_message')
+        return self._make_request('POST', 'send_message', json_data=json_data, model_type='send_message', timeout=timeout)
 
     def send_from_user(
         self,
         chat_id: str,
         message: str,
-        reply_id: Optional[str] = None
+        reply_id: Optional[str] = None,
+        timeout: float = 10.0
     ) -> Response:
         """Send a message as a user."""
         json_data = {'chat_id': chat_id, 'message': message, 'reply_id': reply_id}
-        return self._make_request('POST', 'send_message_from_user', json_data=json_data, model_type='general')
+        return self._make_request('POST', 'send_message_from_user', json_data=json_data, model_type='general', timeout=timeout)
 
     def send_operator_typing(
         self,
         chat_id: str,
         operator_id: str,
-        typing_status: bool = True
+        typing_status: bool = True,
+        timeout: float = 10.0
     ) -> Response:
         """Send operator typing status."""
         json_data = {
@@ -240,18 +249,19 @@ class Goftino:
             'operator_id': operator_id,
             'typing_status': 'true' if typing_status else 'false'
         }
-        return self._make_request('POST', 'operator_typing', json_data=json_data, model_type='general')
+        return self._make_request('POST', 'operator_typing', json_data=json_data, model_type='general', timeout=timeout)
 
-    def close_chat(self, chat_id: str, operator_id: str) -> Response:
+    def close_chat(self, chat_id: str, operator_id: str, timeout: float = 10.0) -> Response:
         """Close a chat."""
         json_data = {'chat_id': chat_id, 'operator_id': operator_id}
-        return self._make_request('POST', 'close_chat', json_data=json_data, model_type='general')
+        return self._make_request('POST', 'close_chat', json_data=json_data, model_type='general', timeout=timeout)
 
     def assign_chat(
         self,
         chat_id: str,
         from_operator: str,
-        to_operator: str
+        to_operator: str,
+        timeout: float = 10.0
     ) -> Response:
         """Assign chat from one operator to another."""
         json_data = {
@@ -259,17 +269,17 @@ class Goftino:
             'from_operator': from_operator,
             'to_operator': to_operator
         }
-        return self._make_request('POST', 'assign_chat', json_data=json_data, model_type='general')
+        return self._make_request('POST', 'assign_chat', json_data=json_data, model_type='general', timeout=timeout)
 
-    def unassign_chat(self, chat_id: str, from_operator: str) -> Response:
+    def unassign_chat(self, chat_id: str, from_operator: str, timeout: float = 10.0) -> Response:
         """Unassign chat from an operator."""
         json_data = {'chat_id': chat_id, 'from_operator': from_operator}
-        return self._make_request('POST', 'unassign_chat', json_data=json_data, model_type='general')
+        return self._make_request('POST', 'unassign_chat', json_data=json_data, model_type='general', timeout=timeout)
 
-    def send_poll(self, chat_id: str) -> Response:
+    def send_poll(self, chat_id: str, timeout: float = 10.0) -> Response:
         """Send a poll to chat."""
         json_data = {'chat_id': chat_id}
-        return self._make_request('POST', 'send_poll', json_data=json_data, model_type='general')
+        return self._make_request('POST', 'send_poll', json_data=json_data, model_type='general', timeout=timeout)
 
     def send_file(
         self,
@@ -278,7 +288,8 @@ class Goftino:
         file_url: str,
         file_name: str,
         file_size: Optional[str] = None,
-        file_duration: Optional[str] = None
+        file_duration: Optional[str] = None,
+        timeout: float = 10.0
     ) -> Response:
         """Send a file."""
         json_data = {
@@ -289,18 +300,19 @@ class Goftino:
             'file_size': file_size,
             'file_duration': file_duration
         }
-        return self._make_request('POST', 'send_file', json_data=json_data, model_type='general')
+        return self._make_request('POST', 'send_file', json_data=json_data, model_type='general', timeout=timeout)
 
-    def edit_message(self, message: str, message_id: str) -> Response:
+    def edit_message(self, message: str, message_id: str, timeout: float = 10.0) -> Response:
         """Edit an existing message."""
         json_data = {'message': message, 'message_id': message_id}
-        return self._make_request('POST', 'edit_message', json_data=json_data, model_type='general')
+        return self._make_request('POST', 'edit_message', json_data=json_data, model_type='general', timeout=timeout)
 
     def create_chat(
         self,
         user_message: str,
         operator_message: Optional[str] = None,
-        operator_id: Optional[str] = None
+        operator_id: Optional[str] = None,
+        timeout: float = 10.0
     ) -> Response:
         """Create a new chat."""
         if not ((operator_id is None) ^ (operator_message is None)):
@@ -312,18 +324,19 @@ class Goftino:
             'operator_message': operator_message,
             'operator_id': operator_id
         }
-        return self._make_request('POST', 'create_chat', json_data=json_data, model_type='create_chat')
+        return self._make_request('POST', 'create_chat', json_data=json_data, model_type='create_chat', timeout=timeout)
 
-    def remove_chat(self, chat_id: str) -> Response:
+    def remove_chat(self, chat_id: str, timeout: float = 10.0) -> Response:
         """Remove a chat."""
         json_data = {'chat_id': chat_id}
-        return self._make_request('POST', 'remove_chat', json_data=json_data, model_type='general')
+        return self._make_request('POST', 'remove_chat', json_data=json_data, model_type='general', timeout=timeout)
 
     def widget(
         self,
         state: bool,
         chat_id: Optional[str] = None,
-        user_id: Optional[str] = None
+        user_id: Optional[str] = None,
+        timeout: float = 10.0
     ) -> Response:
         """Open or close widget."""
         if not ((chat_id is not None) ^ (user_id is not None)):
@@ -331,20 +344,21 @@ class Goftino:
 
         action = "open" if state else "close"
         json_data = {'chat_id': chat_id, 'user_id': user_id, 'action': action}
-        return self._make_request('POST', 'widget', json_data=json_data, model_type='general')
+        return self._make_request('POST', 'widget', json_data=json_data, model_type='general', timeout=timeout)
 
     def dispatch_js_event(
         self,
         event: str,
         chat_id: Optional[str] = None,
-        user_id: Optional[str] = None
+        user_id: Optional[str] = None,
+        timeout: float = 10.0
     ) -> Response:
         """Dispatch a JavaScript event."""
         if not ((chat_id is not None) ^ (user_id is not None)):
             raise ValueError("Either chat_id or user_id must be passed, but not both.")
 
         json_data = {'chat_id': chat_id, 'user_id': user_id, 'event': event}
-        return self._make_request('POST', 'dispatch_js_event', json_data=json_data, model_type='general')
+        return self._make_request('POST', 'dispatch_js_event', json_data=json_data, model_type='general', timeout=timeout)
 
 
 if __name__ == '__main__':
