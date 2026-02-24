@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "goftino_wrapper"
+version = "0.1.7.2"
+description = "A wrapper for Goftino API"
+authors = [
+    { name = "Alireza Khalilian", email = "khalilian@payping.io" }
+]
+readme = "README.md" 
+license = { text = "MIT" }
+keywords = ["Goftino", "API", "wrapper"]
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+requires-python = ">=3.10"
+
+dependencies = [
+    "requests>=2.0.0",
+    "pydantic>=2.0.0",
+    "pydantic_core>=2.0.0",
+    "pytest>=8.4.2",
+    "pandas>=2.0.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["tests/*"]

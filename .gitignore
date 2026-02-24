@@ -1,0 +1,10 @@
+**/__pycache__
+__pycache__/
+logs/*
+db/*
+goftino_wrapper.egg-info
+temp.pkl
+.venv
+build
+*config.json
+tests/manual_test.py
